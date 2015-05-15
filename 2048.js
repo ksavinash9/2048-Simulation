@@ -1,30 +1,95 @@
 /**
  * Created by swarnavinashkumar on 15/05/15.
  */
+/**
+ * Bitly - shorten function for getting the shortened URL.
+ *
+ * @example
+ *      `bitly.shorten(url, callback)
+ *
+ * @method bitly.shorten
+ * @public
+ * @chainable
+ * @param url url to be shortened
+ * @param callback {Function} callback The function to call when ready
+ *
+ */
 function Blocks(initialValue) {
     this.value = initialValue;
     this.row = -1;
     this.col = -1;
+    /**
+     * getValue - helper function to get current value
+     *
+     *
+     * @method getValue
+     * @public
+     * @chainable
+     */
     this.getValue = function() {
         return this.value;
     };
+    /**
+     * addValue - helper function to add value to current Value
+     *
+     *
+     * @method addValue
+     * @public
+     * @chainable
+     * @param other - value to be added
+     */
     this.addValue = function(other) {
         other.value += this.value;
     };
+    /**
+     * merge - helper function to merge blocks
+     *
+     *
+     * @method merge
+     * @public
+     * @chainable
+     */
     this.merge = function(other, matrix) {
         this.addValue(other);
         matrix.spaces[this.row][this.col] = null;
 
     };
-
+    /**
+     * merge - helper function to check if it is possible to merge blocks
+     *
+     *
+     * @method isPossibleMerge
+     * @public
+     * @chainable
+     * @param other - other block being check to merge
+     */
     this.isPossibleMerge = function(other) {
         return other != null && other != -1 && this.value === other.getValue();
 
     };
-
+    /**
+     * canMove - helper function to check if it is possible to move blocks
+     *
+     * @example
+     *      canMove('up', matrix)
+     *
+     * @method canMove
+     * @public
+     * @chainable
+     * @param dir - direction to move
+     * @param grid - current matrix
+     */
     this.canMove = function(dir, grid) {
         return this.getAdjacentBlocks(dir, grid) == null;
     };
+    /**
+     * decideColor - helper function to get color for particular blocks
+     *
+     *
+     * @method decideColor
+     * @public
+     * @chainable
+     */
     this.decideColor = function() {
         switch(this.value) {
             case 2:
@@ -53,6 +118,19 @@ function Blocks(initialValue) {
 
         }
     };
+    /**
+     * moveOnce - helper function to check if it is possible to move blocks atleast once
+     *
+     * @example
+     *      moveOnce('up', matrix)
+     *
+     *
+     * @method moveOnce
+     * @public
+     * @chainable
+     * @param dir - direction to move
+     * @param grid - current matrix
+     */
     this.moveOnce = function(dir, grid) {
         switch (dir) {
             case "down":
@@ -78,6 +156,19 @@ function Blocks(initialValue) {
         this.row = currRow;
         this.col = currCol;
     };
+    /**
+     * moveOnce - helper function to get Adjacent Blocks to current Block
+     *
+     * @example
+     *      getAdjacentBlocks('up', matrix)
+     *
+     *
+     * @method getAdjacentBlocks
+     * @public
+     * @chainable
+     * @param dir - direction to move
+     * @param grid - current matrix
+     */
     this.getAdjacentBlocks = function(dir, grid) {
         var isPresentInBounds = function(row, col) {
             return row < grid.spaces.length && row >= 0 && col < grid.spaces[row].length && col >= 0;
@@ -115,9 +206,34 @@ function Blocks(initialValue) {
 function Matrix() {
     this.spaces = [[null, null, null, null], [null, null, null, null], [null, null, null, null], [null, null, null, null]];
     var moved = false;
-    this.move = function(dir) { //TO-COMPLETE
+    /**
+     * move - helper function to moveBlocks if condition satisfies
+     *
+     * @example
+     *      move('up', matrix)
+     *
+     *
+     * @method move
+     * @public
+     * @chainable
+     * @param dir - direction to move the block
+     */
+    this.move = function(dir) {
         var currRow = 0;
         var currCol = 0;
+        /**
+         * moveHelper - helper function to moveBlocks if condition satisfies
+         *
+         * @example
+         *      moveHelper(spaces[0][0], matrix)
+         *
+         *
+         * @method moveHelper
+         * @public
+         * @chainable
+         * @param piece - current block being passed as parameter
+         * @param grid - current matrix
+         */
         var moveHelper = function(piece, grid) {
             if (currPiece != null) {
                 while (currPiece.canMove(dir, grid)) {
@@ -179,7 +295,18 @@ function Matrix() {
         moved = false;
 
     };
-
+    /**
+     * move - helper function to add a block at random empty space - co-ordinate
+     *
+     * @example
+     *      addBlock(spaces[0][0])
+     *
+     *
+     * @method addBlock
+     * @public
+     * @chainable
+     * @param piece - given block
+     */
     this.addBlock = function(piece) {
         var emptyPositions = [];
         for (var i = 0; i < this.spaces.length; i++) {
@@ -194,14 +321,50 @@ function Matrix() {
         piece.row = randomPos[0];
         piece.col = randomPos[1];
     };
+    /**
+     * addPieceToPos - helper function to add a block at a particular space - co-ordinate
+     *
+     * @example
+     *      addPieceToPos(spaces[0][0],2,1)
+     *
+     *
+     * @method addPieceToPos
+     * @public
+     * @chainable
+     * @param piece - given block
+     * @param row - a particular row
+     * @param col - a particular column
+     */
     this.addPieceToPos = function(piece, row, col) {
         this.spaces[row][col] = piece;
         piece.row = row;
         piece.col = col;
     };
-
+    /**
+     * canEndGame - helper function to check if its possible to endGame
+     *
+     * @example
+     *      canEndGame
+     *
+     *
+     * @method canEndGame
+     * @public
+     * @chainable
+     */
     this.canEndGame = function() {
         var g = this;
+        /**
+         * canEndGame - helper function to check if its possible to endGame
+         *
+         * @example
+         *      canEndGameHelper(spaces[0][0])
+         *
+         *
+         * @method canEndGame
+         * @public
+         * @chainable
+         * @param piece - given block
+         */
         var canEndGameHelper = function(piece) {
             if (piece === -1) {
                 return true;
@@ -242,6 +405,17 @@ function Game() {
     this.score = 0;
     this.grid = new Matrix();
     this.playing = false;
+    /**
+     * configureFromReset - helper function to configure Reset Game
+     *
+     * @example
+     *      configureFromReset
+     *
+     *
+     * @method configureFromReset
+     * @public
+     * @chainable
+     */
     this.configureFromReset = function() {
         this.grid = new Matrix();
         this.score = 0;
@@ -250,6 +424,17 @@ function Game() {
         this.playing = true;
         this.updateMatrixUI();
     };
+    /**
+     * updateMatrixUI - helper function to update the matrix UI
+     *
+     * @example
+     *      updateMatrixUI
+     *
+     *
+     * @method updateMatrixUI
+     * @public
+     * @chainable
+     */
     this.updateMatrixUI = function() {
         for (var i = 0; i < this.grid.spaces.length; i++) {
             for (var j = 0; j < this.grid.spaces[i].length; j++) {
@@ -267,14 +452,47 @@ function Game() {
         }
 
     };
+    /**
+     * gameOverUI - helper function for 'Game Over' UI changes
+     *
+     * @example
+     *      gameOverUI
+     *
+     *
+     * @method gameOverUI
+     * @public
+     * @chainable
+     */
     this.gameOverUI = function() {
         alert("Game Over");
         $(".gameover").fadeTo("slow", 0.9);
     };
+    /**
+     * resetMatrixUI - helper function to reset Matrix UI
+     *
+     * @example
+     *      resetMatrixUI
+     *
+     *
+     * @method resetMatrixUI
+     * @public
+     * @chainable
+     */
     this.resetMatrixUI = function() {
         $(".gameover").fadeTo("fast", 1);
         this.run();
     };
+    /**
+     * run - main function for running the game
+     *
+     * @example
+     *      run
+     *
+     *
+     * @method run
+     * @public
+     * @chainable
+     */
     this.run = function() {
         this.configureFromReset();
         var grid = this.grid;
@@ -313,6 +531,17 @@ function Game() {
 }
 
 var game = new Game();
+/**
+ * restartGame - main function for running the game
+ *
+ * @example
+ *      restartGame
+ *
+ *
+ * @method restartGame
+ * @public
+ * @chainable
+ */
 function restartGame() {
     if (!game.playing) {
         game = new Game();
@@ -325,3 +554,5 @@ var main = function() {
     game.run();
 }
 $(document).ready(main);
+
+
